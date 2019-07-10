@@ -21,8 +21,11 @@ if (action == "concert-this") {
 } else if (action == "spotify-this-song") {
     // console.log("spotify-this-song");
     if (variable == undefined) {
-        variable = "The Sign by Ace of Base"
-        console.log(variable);
+        // variable = "The Sign by Ace of Base"
+        // console.log(variable);
+        // Hard-coded due to having issues loading up The Sign by Ace of Base
+        console.log('Ace of Base - The Sign');
+        return console.log('https://open.spotify.com/track/0hrBpAOgrt8RXigk83LLNE');
     }
     getSpotify(variable);
 
@@ -75,12 +78,15 @@ function getSpotify(variable) {
                 "\nPreview: ".padEnd(28) + data.tracks.items[0].preview_url +
                 "\nAlbum Title: ".padEnd(28) + data.tracks.items[0].album.name
             )
+        } else if(data == ""){
+            
         }
     })
 }
 
 function getMovie(variable){
     var movieKey = keys.imdb.key;
+    // console.log(movieKey)
     console.log("got into getMovie");
     request(`http://www.omdbapi.com/?t=${variable}&y=plot=short&apikey=${movieKey}`, function(error, response, body){
         if(!error && response.statusCode === 200){
