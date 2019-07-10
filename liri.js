@@ -1,7 +1,8 @@
 require("dotenv").config({ path: "./.env" });
-
+var axios = require("axios");
 var request = require("request");
 var Spotify = require("node-spotify-api");
+var moment = require("moment");
 var dotenv = require("dotenv");
 var fs = require("fs");
 // var Twitter = require("twitter");
@@ -11,25 +12,31 @@ var action = process.argv[2];
 var variable = process.argv[3];
 
 if (action == "concert-this") {
-    console.log("concert-this");
-    
+    // console.log("concert-this");
+    if(variable == undefined){
+        console.log("You're missing the artist");
+    }
+    getConcert(variable);
+
 } else if (action == "spotify-this-song") {
-    console.log("spotify-this-song");
+    // console.log("spotify-this-song");
     if (variable == undefined) {
         variable = "The Sign by Ace of Base"
+        console.log(variable);
     }
     getSpotify(variable);
 
 } else if (action == "movie-this") {
-    console.log("movie-this");
+    // console.log("movie-this");
     if (variable == undefined) {
         variable = "Mr. Nobody"
     } else {
         variable = process.argv[3];
     }
-    movie(variable);
+    getMovie(variable);
+
 } else if (action == "do-what-it-says") {
-    console.log("do-what-it-says");
+    // console.log("do-what-it-says");
     getRandom();
 } else {
     console.log("Did you forget the action?")
@@ -68,6 +75,24 @@ function getSpotify(variable) {
                 "\nPreview: ".padEnd(28) + data.tracks.items[0].preview_url +
                 "\nAlbum Title: ".padEnd(28) + data.tracks.items[0].album.name
             )
+        }
+    })
+}
+
+function getMovie(variable){
+    var movieKey = keys.imdb.key;
+    console.log("got into getMovie");
+    request(`http://www.omdbapi.com/?t=${variable}&y=plot=short&apikey=${movieKey}`, function(error, response, body){
+        if(!error && response.statusCode === 200){
+            console.log("\nMovie Title: ".padEnd(28) + JSON.parse(body).Title +
+            "\nMovie Release Year: ".padEnd(28) + JSON.parse(body).Year +
+            "\nIMDB Rating: ".padEnd(28) + JSON.parse(body).Rated +
+            "\nCountry of Production: ".padEnd(28) + JSON.parse(body).Country +
+            "\nLanguage: ".padEnd(28) + JSON.parse(body).Language +
+            "\nMovie Plot: ".padEnd(28) + JSON.stringify(JSON.parse(body).Plot) +
+            "\nMovie Actors: ".padEnd(28) + JSON.parse(body).Actors)
+
+            console.log("got into this if");
         }
     })
 }
