@@ -1,57 +1,58 @@
 require("dotenv").config({ path: "./.env" });
+
 var axios = require("axios");
-var request = require("request");
 var Spotify = require("node-spotify-api");
 var moment = require("moment");
 var dotenv = require("dotenv");
 var fs = require("fs");
-// var Twitter = require("twitter");
 var keys = require("./keys.js");
 
 var action = process.argv[2];
 var variable = process.argv[3];
 
-if (action == "concert-this") {
-    // console.log("concert-this");
-    if (variable == undefined) {
-        console.log("You're missing the artist");
+doThis(action);
+
+function doThis(action) {
+    if (action == "concert-this") {
+        // console.log("concert-this");
+        if (variable == undefined) {
+            console.log("You're missing the artist");
+        } else {
+            variable = process.argv[3];
+        }
+        getConcert(variable);
+
+    } else if (action == "spotify-this-song") {
+        // console.log("spotify-this-song");
+        if (variable == undefined) {
+            // variable = "The Sign by Ace of Base"
+            // console.log(variable);
+            // Hard-coded due to having issues loading up The Sign by Ace of Base
+            console.log('Ace of Base - The Sign');
+            return console.log('https://open.spotify.com/track/0hrBpAOgrt8RXigk83LLNE');
+        }
+        getSpotify(variable);
+
+    } else if (action == "movie-this") {
+        // console.log("movie-this");
+        if (variable == undefined) {
+            variable = "Mr. Nobody"
+        } else {
+            variable = process.argv[3];
+        }
+        getMovie(variable);
+
+    } else if (action == "do-what-it-says") {
+        // console.log("do-what-it-says");
+        getRandom();
     } else {
-        variable = process.argv[3];
+        console.log("Did you forget the action?")
     }
-    getConcert(variable);
-
-} else if (action == "spotify-this-song") {
-    // console.log("spotify-this-song");
-    if (variable == undefined) {
-        // variable = "The Sign by Ace of Base"
-        // console.log(variable);
-        // Hard-coded due to having issues loading up The Sign by Ace of Base
-        console.log('Ace of Base - The Sign');
-        return console.log('https://open.spotify.com/track/0hrBpAOgrt8RXigk83LLNE');
-    }
-    getSpotify(variable);
-
-} else if (action == "movie-this") {
-    // console.log("movie-this");
-    if (variable == undefined) {
-        variable = "Mr. Nobody"
-    } else {
-        variable = process.argv[3];
-    }
-    getMovie(variable);
-
-} else if (action == "do-what-it-says") {
-    // console.log("do-what-it-says");
-    getRandom();
-} else {
-    console.log("Did you forget the action?")
 }
 
 function getConcert(variable) {
-    console.log("I got into Concert");
-    console.log("this is the variable: " + variable);
-    
-
+    // console.log("I got into Concert");
+    // console.log("this is the variable: " + variable);
 
     axios.get("https://rest.bandsintown.com/artists/" + variable + "/events?app_id=codingbootcamp")
         .then(function (response) {
@@ -72,6 +73,7 @@ function getConcert(variable) {
 }
 
 function getSpotify(variable) {
+    console.log('MY VAR', variable)
     var myid = keys.spotify.id;
     var mysecret = keys.spotify.secret;
     var spotify = new Spotify({
@@ -122,19 +124,29 @@ function getMovie(variable) {
 }
 
 function getRandom() {
-    fs.readFile("random.txt", "UTF8", function (data) {
-        var RandomChoices = data.split(", ");
-        // Random choices between 0 - 2
-        var command = Math.floor((Math.random() * 3));
-        var choice = Math.floor((Math.random() * RandomChoices.length))
-        if (command == 0) {
-            getConcert(RandomChoices[choice]);
-        }
-        else if (command == 1) {
-            getMovie(RandomChoices[choice]);
-        }
-        else if (command == 2) {
-            getSpotify(RandomChoices[choice]);
+    fs.readFile("random.txt", "utf8", function (error, data) {
+        if (error) {
+            console.log(error);
+        } else {
+            variable = data.split(",")[1];
+            doThis(data.split(",")[0]);
+            // console.log(data.split(",")[0]);
+
+            // Misunderstood and overcomplicated the functions
+            //======================================================================
+            // var RandomChoices = data.split(", ");
+            // Random choices between 0 - 2
+            // var command = Math.floor((Math.random() * 3));
+            // var choice = Math.floor((Math.random() * RandomChoices.length))
+            // if (command == 0) {
+            //     getConcert(RandomChoices[choice]);
+            // }
+            // else if (command == 1) {
+            //     getMovie(RandomChoices[choice]);
+            // }
+            // else if (command == 2) {
+            //     getSpotify(RandomChoices[choice]);
+            // }
         }
     })
 }
