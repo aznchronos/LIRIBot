@@ -57,15 +57,16 @@ function getConcert(variable) {
         .then(function (response) {
             // console.log(response);
             for (var i = 0; i < response.data.length; i++) {
-                console.log(response.data[i]);
+                // console.log(response.data[i]);
                 var datetime = response.data[i].datetime; //Saves datetime response into a variable
                 // console.log("date/time: " + datetime);
                 var dateArr = datetime.split('T'); //Attempting to split the date and time in the response
                 // console.log("date/arr" + dateArr);
+                // console.log("moment test: " + moment(datetime).format("MM-DD-YYYY"))
 
                 console.log("\nVenue Name: " + response.data[i].venue.name +
                     "\nVenue Location: " + response.data[i].venue.city +
-                    "\nDate of the Event: " + moment(dateArr[0], "MM-DD-YYYY"));
+                    "\nDate of the Event: " + moment(dateArr[0]).format("MM-DD-YYYY"));
             }
         })
 }
